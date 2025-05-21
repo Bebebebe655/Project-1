@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Карта с границами стран</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+        }
+        #header {
+            text-align: center;
+            font-size: 24px;
+            margin: 10px;
+        }
+        #map {
+            flex: 1;
+            width: 100%;
+        }
+        .leaflet-control-attribution {
+            display: none; /* Убираем логотипы */
+        }
+    </style>
+</head>
+<body>
+    <div id="header">Внешнеэкономические связи России в 2024 году</div>
+    <div id="map"></div>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet-ajax@2.1.0/dist/leaflet.ajax.js"></script>
+    <script>
+        // Инициализация карты
+        var map = L.map('map', {
+            maxBounds: [[-60, -180], [85, 180]],
+            maxZoom: 18,
+            minZoom: 2
+        }).setView([20, 0], 2);
+
+        // Добавление базового слоя карты без логотипов
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 18,
+            attribution: false // Убираем атрибуцию
+        }).addTo(map);
+
+        // Загрузка GeoJSON файла с границами стран
+        var geojsonLayer = new L.GeoJSON.AJAX("https://raw.githubusercontent.com/datasets/geo-boundaries-world-110m/master/countries.geojson", {
+            onEachFeature: function (feature, layer) {
+                layer.on('click', function (e) {
+                    var countryName = feature.properties.ADMIN;
+                    var message = 'Информация о внешнеэкономических связях этой страны в 2024 году недоступна.';
+
+                    // Сообщения для стран
+                    switch (countryName) {
+                        case 'China':
+                            message = 'Активное сотрудничество в области торговли и технологий.';
+                            break;
+                        case 'India':
+                            message = 'Развитие отношений в области энергетики и высоких технологий.';
+                            break;
+                        case 'Belarus':
+                            message = 'Тесное сотрудничество в экономике и политике.';
+                            break;
+                        case 'Turkey':
+                            message = 'Активное сотрудничество в области энергетики и торговли.';
+                            break;
+                        case 'Kazakhstan':
+                            message = 'Стратегическое партнерство в экономике и безопасности.';
+                            break;
+                        case 'Brazil':
+                            message = 'Сотрудничество в сельском хозяйстве и энергетике.';
+                            break;
+                        case 'United Arab Emirates':
+                            message = 'Развитие торговли и инвестиций.';
+                            break;
+                        case 'South Korea':
+                            message = 'Активное сотрудничество в области технологий и экономики.';
+                            break;
+                        case 'Germany':
+                            message = 'Важный партнер в области торговли и энергетики.';
+                            break;
+                        case 'Japan':
+                            message = 'Сотрудничество в области технологий и инвестиций.';
+                            break;
+                        case 'Italy':
+                            message = 'Активное сотрудничество в области экономики и культуры.';
+                            break;
+                        case 'Poland':
+                            message = 'Исторические связи и экономическое сотрудничество.';
+                            break;
+                        case 'France':
+                            message = 'Взаимодействие в области культуры и экономики.';
+                            break;
+                        case 'Netherlands':
+                            message = 'Важное сотрудничество в области торговли.';
+                            break;
+                        case 'United States of America':
+                            message = 'Сложные отношения в области экономики и политики.';
+                            break;
+                    }
+
+                    // Показываем всплывающее окно с сообщением
+                    L.popup()
+                        .setLatLng(e.latlng)
+                        .setContent(message)
+                        .openOn(map);
+                });
+            }
+        }).addTo(map);
+    </script>
+</body>
+</html>
